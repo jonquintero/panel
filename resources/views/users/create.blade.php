@@ -40,14 +40,53 @@
                     <label for="bio">Bio:</label>
                     <textarea class="form-control" name="bio" id="bio" placeholder="Programador">{{ old('bio') }}</textarea>
                 </div>
+                <div class="form-group">
+                    <label for="profession_id">Profesión</label>
+                    <select name="profession_id" id="profession_id" class="form-control">
+                        <option value="">Seleccione una profesion</option>
+                        @foreach($professions as $profession)
+                            <option value="{{ $profession->id }}" {{old('profession_id') == $profession->id ? ' selected' : ''}}>
+                                {{ $profession->title }}
+                            </option>
+                        @endforeach
+
+                    </select>
+                </div>
 
                 <div class="form-group">
                     <label for="twitter">Twitter:</label>
                     <input type="twitter" class="form-control" name="twitter" id="twitter" placeholder="https://twitter.com/username" value="{{ old('twitter') }}">
                 </div>
+                <h5>Habilidades</h5>
+                @foreach($skills as $skill)
+                <div class="form-check form-check-inline">
+                    <input name="skills[{{ $skill->id }}]"
+                           class="form-check-input"
+                           type="checkbox"
+                           id="skill_{{ $skill->id }}"
+                           value="{{ $skill->id }}"
+                           {{ old("skills.{$skill->id}") ? 'checked' : '' }}
+                    >
+                    <label class="form-check-label" for="skill_{{ $skill->id }}">{{ $skill->name }}</label>
+                </div>
+               @endforeach
+                <h5 class="mt-3">Rol</h5>
+                @foreach($roles as $role => $name)
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                           type="radio" name="role"
+                           id="role_{{ $role }}"
+                           value="{{ $role }}"
+                            {{ old('role') == $role ? 'checked' : ' ' }}>
+                    <label class="form-check-label" for="role_{{ $role }}">{{ $name }}</label>
+                </div>
+                @endforeach
+                <div class="form-group mt-4">
+                          <button type="submit" class="btn btn-primary">Crear usuario</button>
+                    <a href="{{ route('users.index') }}" class="btn btn-link">Regresar al listado de usuarios</a>
+                </div>
 
-                <button type="submit" class="btn btn-primary">Crear usuario</button>
-                <a href="{{ route('users.index') }}" class="btn btn-link">Regresar al listado de usuarios</a>
+
             </form>
         </div>
     </div>

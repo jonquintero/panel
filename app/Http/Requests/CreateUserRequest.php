@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Role;
 use App\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\DB;
@@ -31,9 +32,15 @@ class CreateUserRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => 'required',
             'bio' => 'required',
-            'twitter' => ['nullable','url'],
-            'profession_id' => Rule::exists('professions', 'id')->whereNull('deleted_at'),
-
+            'role' => ['nullable', Rule::in(Role::getList())],
+            'twitter' => ['nullable','present','url'],
+            'profession_id' => [
+                'nullable', 'present',
+                Rule::exists('professions', 'id')->whereNull('deleted_at'),
+                ],
+            'skills' => ['array',
+                Rule::exists('skills', 'id'),
+            ],
         ];
     }
     public function messages()
@@ -48,20 +55,31 @@ class CreateUserRequest extends FormRequest
         DB::transaction(function (){
 
             $data =  $this->validated();
-            $user = User::create([
+            $user = new User([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
-                'profession_id' => $data['profession_id'] ?? null,
+                'profession_id' => $data['profession_id'],
+
             ]);
+
+            $user->role = $data['role'] ?? 'user';
+
+            $user->save();
 
             $user->profile()->create([
                 'bio' => $data['bio'],
                 // una forma de trabajar con campo null
-                'twitter' => $data['twitter'] ?? null,
+                'twitter' => $data['twitter'],
+                'profession_id' => $data['profession_id'],
 
                 //'twitter' => array_get($data, 'twitter'),
             ]);
+            if (! empty($data['skills']))
+            {
+                $user->skills()->attach($data['skills']);
+            }
+
         });
     }
 }
