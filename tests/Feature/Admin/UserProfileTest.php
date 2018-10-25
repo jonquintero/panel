@@ -13,10 +13,10 @@ class UsersProfileTest extends TestCase
     use RefreshDatabase;
 
     protected $defaultData = [
-        'name' => 'Duilio',
-        'email' => 'duilio@styde.net',
+        'name' => 'Jonathan',
+        'email' => 'jquintero@hotmail.com',
         'bio' => 'Programador de Laravel y Vue.js',
-        'twitter' => 'https://twitter.com/sileence',
+        'twitter' => 'https://twitter.com/jonquintero',
     ];
 
     /** @test */
