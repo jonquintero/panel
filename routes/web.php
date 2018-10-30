@@ -15,14 +15,17 @@ Route::get('/usuarios/nuevo', 'UserController@create')->name('users.create');
 
 Route::post('/usuarios', 'UserController@store');
 
+Route::get('/usuarios/papelera', 'UserController@trashed')->name('users.trashed');
+
 Route::get('/usuarios/{user}/editar', 'UserController@edit')->name('users.edit');
 
 Route::put('/usuarios/{user}', 'UserController@update');
 
 Route::get('/saludo/{name}/{nickname?}', 'WelcomeUserController');
 
-Route::delete('/usuarios/{user}', 'UserController@destroy')->name('users.destroy');
+Route::delete('/usuarios/{id}', 'UserController@destroy')->name('users.destroy');
 
+Route::patch('/usuarios/{user}/papelera', 'UserController@trash')->name('users.trash');
 //Profile
 Route::get('/editar-perfil/', 'ProfileController@edit');
 Route::put('/editar-perfil/', 'ProfileController@update');

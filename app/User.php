@@ -2,13 +2,16 @@
 
 namespace App;
 
+
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
     //protected $table = 'users';
+    use SoftDeletes;
 
     use Notifiable;
 
