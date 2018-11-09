@@ -9,4 +9,12 @@ class UserProfile extends Model
 {
     use SoftDeletes;
     protected $fillable = ['bio', 'twitter', 'profession_id'];
+
+    public function profession()
+    {
+        return $this->belongsTo(Profession::class)->withDefault([
+            'title' => '(Sin profesion)',
+        ]);
+    }
+
 }

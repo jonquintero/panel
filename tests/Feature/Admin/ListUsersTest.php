@@ -71,6 +71,13 @@ class ListUsersTest extends TestCase
                 'Tercer Usuario'])
             ->assertDontSee('Segundo Usuario')
             ->assertDontSee('Primer Usuario');
+
+        $this->get('/usuarios?page=2')
+            ->assertSeeInOrder([
+                'Segundo Usuario',
+                'Primer Usuario',
+            ])
+            ->assertDontSee('Tercer Usuario');
     }
 
     /** @test */

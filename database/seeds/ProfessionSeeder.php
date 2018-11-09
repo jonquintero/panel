@@ -33,6 +33,6 @@ class ProfessionSeeder extends Seeder
             'title' => 'Diseñador web',
         ]);
 
-        factory(Profession::class)->times(17)->create();
+     //   factory(Profession::class)->times(17)->create();
     }
 }
