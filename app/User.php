@@ -54,6 +54,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserProfile::class)->withDefault();
     }
+    public function team()
+    {
+        return $this->belongsTo(Team::class)->withDefault();
+    }
 
     public function isAdmin()
     {
