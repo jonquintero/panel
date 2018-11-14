@@ -63,4 +63,28 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function scopeSearch($query, $search)
+    {
+        if (empty($search)){
+            return;
+        }
+        /*$query->when(request('team'), function ($query, $team){
+        if ($team === 'with_team'){
+            $query->has('team');
+        }elseif ($team === 'without_team'){
+            $query->doesntHave('team');
+        }
+    })*/
+
+
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('team', function ($query) use ($search){
+                        $query->where('name',  'like', "%{$search}%");
+                    });
+
+
+
+    }
 }

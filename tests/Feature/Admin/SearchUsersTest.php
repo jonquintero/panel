@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Team;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -82,4 +83,65 @@ class SearchUsersTest extends TestCase
                 return $users->contains($joel) && !$users->contains($ellie);
             });
     }
+
+    /** @test */
+    function search_users_by_team_name()
+    {
+        $joel = factory(User::class)->create([
+            'name' => 'Joel',
+            'team_id' => factory(Team::class)->create(['name' => 'Smuggler'])->id
+        ]);
+
+        $ellie = factory(User::class)->create([
+            'name' => 'Ellie',
+            'team_id' => null,
+        ]);
+
+        $marlene = factory(User::class)->create([
+            'name' => 'Marlene',
+            'team_id' => factory(Team::class)->create(['name' => 'Firefly'])->id
+        ]);
+
+        $response = $this->get('/usuarios?search=Joel')
+            ->assertStatus(200);
+
+
+        $response->assertViewColletction('users')
+            ->contains($marlene)
+            ->notContains($joel)
+            ->notContains($ellie);
+    }
+
+    /** @test */
+    function partial_search_by_team_name()
+    {
+        $joel = factory(User::class)->create([
+            'name' => 'Joel',
+            'team_id' => factory(Team::class)->create(['name' => 'Smuggler'])->id
+        ]);
+
+        $ellie = factory(User::class)->create([
+            'name' => 'Ellie',
+            'team_id' => null,
+        ]);
+
+        $marlene = factory(User::class)->create([
+            'name' => 'Marlene',
+            'team_id' => factory(Team::class)->create(['name' => 'Firefly'])->id
+        ]);
+
+        $response = $this->get('/usuarios?search=Joel')
+            ->assertStatus(200);
+        /* ->assertViewHas('users', function ($users) use ($joel, $ellie, $marlene){
+             return $users->contains($marlene)
+                 && !$users->contains($ellie)
+                 && !$users->contains($joel);
+         });*/
+
+        $response->assertViewColletction('users')
+            ->contains($marlene)
+            ->notContains($joel)
+            ->notContains($ellie);
+    }
+
 }
