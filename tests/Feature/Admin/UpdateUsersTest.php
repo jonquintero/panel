@@ -14,7 +14,8 @@ class UpdateUsersTest extends TestCase
     use RefreshDatabase;
 
     protected $defaultData = [
-        'name' => 'Jonathan',
+        'first_name' => 'Jonathan',
+        'last_name' => 'Quintero',
         'email' => 'jonquintero@hotmail.com',
         'password' => '123456',
         'profession_id' => '',
@@ -54,19 +55,16 @@ class UpdateUsersTest extends TestCase
         $newProfession = factory(Profession::class)->create();
         $newSkill1 = factory(Skill::class)->create();
         $newSkill2 = factory(Skill::class)->create();
-        $this->put("/usuarios/{$user->id}", [
-            'name' => 'Jonathan',
-            'email' => 'jonquintero@hotmail.com',
-            'password' => '123456',
-            'bio' => 'Programador de Laravel y Vue.js',
-            'twitter' => 'https://twitter.com/jonquintero',
+        $this->put("/usuarios/{$user->id}", $this->withData([
             'role' => 'admin',
             'profession_id' => $newProfession->id,
             'skills' => [$newSkill1->id, $newSkill2->id],
-        ])->assertRedirect("/usuarios/{$user->id}");
+
+        ]))->assertRedirect("/usuarios/{$user->id}");
 
         $this->assertCredentials([
-            'name' => 'Jonathan',
+            'first_name' => 'Jonathan',
+            'last_name' => 'Quintero',
             'email' => 'jonquintero@hotmail.com',
             'password' => '123456',
             'role' => 'admin',
@@ -109,7 +107,7 @@ class UpdateUsersTest extends TestCase
     }
 
     /** @test */
-    function the_name_is_required()
+    function the_first_name_is_required()
     {
         $this->handleValidationExceptions();
 
@@ -117,11 +115,29 @@ class UpdateUsersTest extends TestCase
 
         $this->from("usuarios/{$user->id}/editar")
             ->put("usuarios/{$user->id}", $this->withData([
-                'name' => '',
+                'first_name' => '',
 
             ]))
             ->assertRedirect("usuarios/{$user->id}/editar")
-            ->assertSessionHasErrors(['name']);
+            ->assertSessionHasErrors(['first_name']);
+
+        $this->assertDatabaseMissing('users', ['email' => 'jonquintero@hotmail.com']);
+    }
+
+    /** @test */
+    function the_last_name_is_required()
+    {
+        $this->handleValidationExceptions();
+
+        $user = factory(User::class)->create();
+
+        $this->from("usuarios/{$user->id}/editar")
+            ->put("usuarios/{$user->id}", $this->withData([
+                'last_name' => '',
+
+            ]))
+            ->assertRedirect("usuarios/{$user->id}/editar")
+            ->assertSessionHasErrors(['last_name']);
 
         $this->assertDatabaseMissing('users', ['email' => 'jonquintero@hotmail.com']);
     }
@@ -141,7 +157,7 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}/editar")
             ->assertSessionHasErrors(['email']);
 
-        $this->assertDatabaseMissing('users', ['name' => 'Jonathan Quintero']);
+        $this->assertDatabaseMissing('users', ['first_name' => 'Jonathan', 'last_name' => 'Quintero']);
     }
 
     /** @test */
@@ -176,14 +192,16 @@ class UpdateUsersTest extends TestCase
 
         $this->from("usuarios/{$user->id}/editar")
             ->put("usuarios/{$user->id}", $this->withData([
-                'name' => 'Jonathan Quintero',
+                'first_name' => 'Jonathan',
+                'last_name' => 'Quintero',
                 'email' => 'jonathan@hotmail.com',
 
             ]))
             ->assertRedirect("usuarios/{$user->id}"); // (users.show)
 
         $this->assertDatabaseHas('users', [
-            'name' => 'Jonathan Quintero',
+            'first_name' => 'Jonathan',
+            'last_name' => 'Quintero',
             'email' => 'jonathan@hotmail.com',
         ]);
     }
@@ -205,7 +223,8 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}"); // (users.show)
 
         $this->assertCredentials([
-            'name' => 'Jonathan',
+            'first_name' => 'Jonathan',
+            'last_name' => 'Quintero',
             'email' => 'jonathan@hotmail.com',
             'password' => $oldPassword // VERY IMPORTANT!
         ]);

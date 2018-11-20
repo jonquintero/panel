@@ -21,7 +21,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password'
+        'first_name', 'last_name', 'email', 'password'
     ];
 
     /**
@@ -77,8 +77,8 @@ class User extends Authenticatable
         }
     })*/
 
-
-                $query->where('name', 'like', "%{$search}%")
+       // $query->where(DB::raw('CONCAT(first_name, " ", last_name)'), 'like', "%{$search}%")
+                $query->whereRaw('CONCAT(first_name, " ", last_name) like ?', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhereHas('team', function ($query) use ($search){
                         $query->where('name',  'like', "%{$search}%");
@@ -86,5 +86,10 @@ class User extends Authenticatable
 
 
 
+    }
+
+    public function getNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
     }
 }
