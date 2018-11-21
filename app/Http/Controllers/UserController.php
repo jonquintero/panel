@@ -19,11 +19,20 @@ class UserController extends Controller
     public function index()
     {
        // $users = User::orderByDesc('created_at')->paginate();
-        $users = User::query()
+        /*$users = User::query()
           ->with('team','skills','profile')
           ->search(request('search'))
           ->orderByDesc('created_at')
-          ->paginate();
+          ->paginate();*/
+
+        if (request('search')){
+            $q = User::search(request('search'));
+        } else{
+            $q = User::query();
+        }
+        $users = $q->paginate();
+
+        $users->load('team', 'skills', 'profile');
 
         $users->appends(request(['search']));
 

@@ -7,13 +7,12 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
+use Laravel\Scout\Searchable;
 
 class User extends Authenticatable
 {
     //protected $table = 'users';
-    use SoftDeletes;
-
-    use Notifiable;
+    use SoftDeletes, Notifiable, Searchable;
 
     /**
      * The attributes that are mass assignable.
@@ -54,6 +53,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserProfile::class)->withDefault();
     }
+
+
     public function team()
     {
         return $this->belongsTo(Team::class)->withDefault();
@@ -64,11 +65,22 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function scopeSearch($query, $search)
+    public function toSearchableArray()
     {
-        if (empty($search)){
-            return;
-        }
+        return[
+            'name' => $this->name,
+            'email' => $this->email,
+            'team' => $this->team->name,
+        ];
+    }
+
+
+
+    /* public function scopeSearch($query, $search)
+     {
+         if (empty($search)){
+             return;
+         }*/
         /*$query->when(request('team'), function ($query, $team){
         if ($team === 'with_team'){
             $query->has('team');
@@ -78,7 +90,7 @@ class User extends Authenticatable
     })*/
 
        // $query->where(DB::raw('CONCAT(first_name, " ", last_name)'), 'like', "%{$search}%")
-                $query->whereRaw('CONCAT(first_name, " ", last_name) like ?', "%{$search}%")
+             /*   $query->whereRaw('CONCAT(first_name, " ", last_name) like ?', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhereHas('team', function ($query) use ($search){
                         $query->where('name',  'like', "%{$search}%");
@@ -86,10 +98,10 @@ class User extends Authenticatable
 
 
 
-    }
+    }*/
 
-    public function getNameAttribute()
+    /*public function getNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
-    }
+    }*/
 }
