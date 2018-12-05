@@ -20,10 +20,17 @@ class User extends Authenticatable
         //
     ];
 
-    public static function findByEmail($email)
+    /**
+     * Create a new Eloquent query builder for the model.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public function newEloquentBuilder($query)
     {
-        return static::where(compact('email'))->first();
+        return new UserQuery($query);
     }
+
 
     public function team()
     {
@@ -43,41 +50,6 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role === 'admin';
-    }
-
-    public function scopeSearch($query, $search)
-    {
-        if (empty($search)){
-            return;
-        }
-        /*$query->when(request('team'), function ($query, $team){
-        if ($team === 'with_team'){
-            $query->has('team');
-        }elseif ($team === 'without_team'){
-            $query->doesntHave('team');
-        }
-    })*/
-
-        // $query->where(DB::raw('CONCAT(first_name, " ", last_name)'), 'like', "%{$search}%")
-        $query->whereRaw('CONCAT(first_name, " ", last_name) like ?', "%{$search}%")
-            ->orWhere('email', 'like', "%{$search}%")
-            ->orWhereHas('team', function ($query) use ($search){
-                $query->where('name',  'like', "%{$search}%");
-            });
-
-
-
-    }
-
-    public function scopeByState($query, $state)
-    {
-        if ($state == 'active'){
-            return $query->where('active', true);
-        }
-
-        if ($state == 'inactive'){
-            return $query->where('active', false);
-        }
     }
 
     public function getNameAttribute()

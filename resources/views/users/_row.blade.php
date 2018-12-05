@@ -2,7 +2,9 @@
     <td>{{ $user->id }}</td>
     <th scope="row">
         {{ $user->name }} {{ $user->status }}
-
+        @if($user->role != 'user')
+            ({{ $user->role }})
+        @endif
             <span class="status st-{{ $user->state }}"></span>
 
         <span class="note">{{ $user->team->name }}</span>
