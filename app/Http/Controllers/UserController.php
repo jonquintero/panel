@@ -7,11 +7,11 @@ use App\Http\Requests\{CreateUserRequest, UpdateUserRequest};
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $users = User::query()
             ->with('team', 'skills', 'profile.profession')
-            ->filterBy(request('state', 'role','search'))
+            ->filterBy($request->all(['state', 'role','search']))
             ->orderByDesc('created_at')
             ->paginate();
 

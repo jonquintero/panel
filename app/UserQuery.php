@@ -11,6 +11,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
 
+use Illuminate\Support\Str;
+use Illuminate\Validation\Validator;
+
 class UserQuery extends Builder
 {
     public function findByEmail($email)
@@ -20,12 +23,24 @@ class UserQuery extends Builder
 
     public function filterBy(array $filters)
     {
-        $this->byState(request('state'))
-        ->byRole(request('role'))
-        ->search(request('search'));
+        $rules = [
+            'search' => 'filled',
+            'status' => 'in:active,inactive',
+            'role' => 'in:admin,user',
+        ];
+
+        $validator = Validator::make($filters, $rules);
+        foreach ($validator as $name => $value){
+            $this->{'filterBy'.Str::studly($name)}($value);
+        }
+        $this->byState(request($filters['state']))
+        ->byRole(request($filters['role']))
+        ->search(request($filters['search']));
+
+        return $this;
     }
 
-    public function search($search)
+    public function filterBySearch($search)
     {
         if (empty($search)){
             return $this;
@@ -45,7 +60,7 @@ class UserQuery extends Builder
                 $query->where('name',  'like', "%{$search}%");
             });
     }
-    public function byState($state)
+    public function filterByState($state)
     {
         if ($state == 'active'){
             return $this->where('active', true);
@@ -57,7 +72,7 @@ class UserQuery extends Builder
         return $this;
     }
 
-    public function byRole($role)
+    public function filterByRole($role)
     {
         if(in_array($role, ['admin', 'role'])){
             // if(! empty($role)){
