@@ -11,40 +11,29 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
 
-use Illuminate\Support\Str;
-use Illuminate\Validation\Validator;
-
 class UserQuery extends Builder
 {
+    use FiltersQueries;
+
     public function findByEmail($email)
     {
         return static::where(compact('email'))->first();
     }
 
-    public function filterBy(array $filters)
+    protected function filterRules(): array
     {
-        $rules = [
+        return [
             'search' => 'filled',
-            'status' => 'in:active,inactive',
+            'state' => 'in:active,inactive',
             'role' => 'in:admin,user',
         ];
 
-        $validator = Validator::make($filters, $rules);
-        foreach ($validator as $name => $value){
-            $this->{'filterBy'.Str::studly($name)}($value);
-        }
-        $this->byState(request($filters['state']))
-        ->byRole(request($filters['role']))
-        ->search(request($filters['search']));
-
-        return $this;
     }
+
+
 
     public function filterBySearch($search)
     {
-        if (empty($search)){
-            return $this;
-        }
         /*$query->when(request('team'), function ($query, $team){
         if ($team === 'with_team'){
             $query->has('team');
@@ -62,22 +51,20 @@ class UserQuery extends Builder
     }
     public function filterByState($state)
     {
-        if ($state == 'active'){
-            return $this->where('active', true);
-        }
 
-        if ($state == 'inactive'){
-            return $this->where('active', false);
-        }
-        return $this;
+        return $this->where('active', $state == 'active');
     }
 
-    public function filterByRole($role)
+   /* public function filterByRole($role)
     {
         if(in_array($role, ['admin', 'role'])){
             // if(! empty($role)){
             $this->where('role', $role);
         }
         return $this;
-    }
+    }*/
+
+
+
+
 }
