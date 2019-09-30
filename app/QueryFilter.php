@@ -1,21 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: usuario
- * Date: 10/12/2018
- * Time: 7:54 AM
- */
-
 namespace App;
 
-
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+
 
 abstract class QueryFilter
 {
     protected $valid;
-    abstract public function rules();
+    abstract public function rules(): array;
 
     public function applyTo($query, array $filters)
     {
@@ -24,21 +17,17 @@ abstract class QueryFilter
         $validator = Validator::make(array_intersect_key($filters, $rules), $rules);
         $this->valid = $validator->valid();
         foreach ( $this->valid as $name => $value){
-
             $this->applyFilter($query,$name, $value);
-
         }
-        /* $this->byState(request($filters['state']))
-         ->byRole(request($filters['role']))
-         ->search(request($filters['search']));*/
 
         return $query;
     }
 
-    protected function applyFilter($query,$name, $value): void
+    protected function applyFilter($query,$name, $value)
     {
-        $method = 'filterBy' . Str::studly($name);
-        if (method_exists($this, $method)) {
+        //$method = 'filterBy' . Str::studly($name);
+
+        if (method_exists($this, $method = Str::camel($name))) {
             $this->$method($query, $value);
         }else{
             $query->where($name, $value);
@@ -47,6 +36,6 @@ abstract class QueryFilter
 
     public function valid()
     {
-        return $this->valid();
+        return $this->valid;
     }
 }

@@ -79,9 +79,9 @@ class CreateUserRequest extends FormRequest
                 'profession_id' => $this->profession_id,
             ]);
 
-            if ($this->skills != null) {
-                $user->skills()->attach($this->skills);
-            }
+                if ($this->skills != null) {
+                    $user->skills()->attach($this->skills);
+                }
         });
     }
 }

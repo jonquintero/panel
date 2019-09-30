@@ -1,6 +1,6 @@
 <?php
 
-return [
+    return [
     'title' => [
       'index' => 'Listado de usuarios',
       'trash' => 'Papelera de usuarios',

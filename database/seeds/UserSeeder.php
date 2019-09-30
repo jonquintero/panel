@@ -48,13 +48,13 @@ class UserSeeder extends Seeder
             'email' => 'jonquintero@hotmail.com',
             'password' => bcrypt('laravel'),
             'role' => 'admin',
-            'created_at' => now()->addDay(),
+            'created_at' => now(),
             'active' => true,
         ]);
 
         $admin->skills()->attach($this->skills);
 
-        $admin->profile()->create([
+        $admin->profile()->update([
             'bio' => 'Programador, Basquetbolista, Testigo de Jehova',
             'profession_id' => $this->professions->firstWhere('title', 'Desarrollador back-end')->id,
         ]);
@@ -65,13 +65,14 @@ class UserSeeder extends Seeder
         $user = factory(User::class)->create([
             'team_id' => rand(0, 2) ? null : $this->teams->random()->id,
             'active' => rand(0,3) ? true : false,
+            'created_at' => now()->subDays(rand(1,90)),
         ]);
 
         $user->skills()->attach($this->skills->random(rand(0, 7)));
-
-        factory(UserProfile::class)->create([
-            'user_id' => $user->id,
+        $user->profile->update([
             'profession_id' => rand(0, 2) ? $this->professions->random()->id : null,
+
         ]);
+
     }
 }

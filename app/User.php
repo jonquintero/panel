@@ -54,6 +54,7 @@ class User extends Authenticatable
 
     public function scopeFilterBy($query, QueryFilter $filters,  array $data)
     {
+        //dd($data);
         return $filters->applyTo($query, $data);
 
     }
@@ -72,7 +73,7 @@ class User extends Authenticatable
     public function getStateAttribute()
     {
         if ($this->active !== null){
-            return $this->active ? 'active' : 'inactive';
+                return $this->active ? 'active' : 'inactive';
         }
 
     }

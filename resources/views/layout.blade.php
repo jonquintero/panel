@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>@yield('title') - Styde.net</title>
+    <title>@yield('title') - Panel</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -55,7 +55,7 @@
 
 <footer class="footer">
     <div class="container">
-        <span class="text-muted">https://styde.net</span>
+        <span class="text-muted">https://jonquintero.com</span>
     </div>
 </footer>
 
@@ -68,11 +68,13 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/gijgo@1.9.10/js/gijgo.min.js"></script>
 <script>
-    $('#date_start').datepicker({
-        uiLibrary: 'bootstrap4'
+    $('#from').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'dd/mm/yyyy'
     });
-    $('#date_end').datepicker({
-        uiLibrary: 'bootstrap4'
+    $('#to').datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'dd/mm/yyyy'
     });
 </script>
 </body>
