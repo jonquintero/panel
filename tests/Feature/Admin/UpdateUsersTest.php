@@ -11,12 +11,12 @@ class UpdateUsersTest extends TestCase
     use RefreshDatabase;
 
     protected $defaultData = [
-        'name' => 'Duilio',
-        'email' => 'duilio@styde.net',
+        'name' => 'Jonathan',
+        'email' => 'jonquintero@hotmail.com',
         'password' => '123456',
         'profession_id' => '',
         'bio' => 'Programador de Laravel y Vue.js',
-        'twitter' => 'https://twitter.com/sileence',
+        'twitter' => 'https://twitter.com/jordan',
         'role' => 'user',
         'state' => 'active',
     ];
@@ -54,11 +54,11 @@ class UpdateUsersTest extends TestCase
         $newSkill2 = factory(Skill::class)->create();
 
         $this->put("/usuarios/{$user->id}", [
-            'name' => 'Duilio',
-            'email' => 'duilio@styde.net',
+             'name' => 'Jonathan',
+            'email' => 'jonquintero@hotmail.com',
             'password' => '123456',
             'bio' => 'Programador de Laravel y Vue.js',
-            'twitter' => 'https://twitter.com/sileence',
+            'twitter' => 'https://twitter.com/jumpman',
             'role' => 'admin',
             'profession_id' => $newProfession->id,
             'skills' => [$newSkill1->id, $newSkill2->id],
@@ -66,8 +66,8 @@ class UpdateUsersTest extends TestCase
         ])->assertRedirect("/usuarios/{$user->id}");
 
         $this->assertCredentials([
-            'name' => 'Duilio',
-            'email' => 'duilio@styde.net',
+             'name' => 'Jonathan',
+             'email' => 'jonquintero@hotmail.com',
             'password' => '123456',
             'role' => 'admin',
             'active' => false,
@@ -76,7 +76,7 @@ class UpdateUsersTest extends TestCase
         $this->assertDatabaseHas('user_profiles', [
             'user_id' => $user->id,
             'bio' => 'Programador de Laravel y Vue.js',
-            'twitter' => 'https://twitter.com/sileence',
+            'twitter' => 'https://twitter.com/jumpman',
             'profession_id' => $newProfession->id,
         ]);
 
@@ -122,7 +122,7 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}/editar")
             ->assertSessionHasErrors(['name']);
 
-        $this->assertDatabaseMissing('users', ['email' => 'duilio@styde.net']);
+        $this->assertDatabaseMissing('users', ['email' => 'jonquintero@hotmail.com']);
     }
 
     /** @test */
@@ -139,7 +139,7 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}/editar")
             ->assertSessionHasErrors(['email']);
 
-        $this->assertDatabaseMissing('users', ['name' => 'Duilio Palacios']);
+        $this->assertDatabaseMissing('users', ['name' => 'Jon Farmer']);
     }
 
     /** @test */
@@ -152,7 +152,7 @@ class UpdateUsersTest extends TestCase
         ]);
 
         $user = factory(User::class)->create([
-            'email' => 'duilio@styde.net'
+            'email' => 'jon@example.com'
         ]);
 
         $this->from("usuarios/{$user->id}/editar")
@@ -169,19 +169,19 @@ class UpdateUsersTest extends TestCase
     function the_users_email_can_stay_the_same()
     {
         $user = factory(User::class)->create([
-            'email' => 'duilio@styde.net'
+            'email' => 'jonquintero@hotmail.com'
         ]);
 
         $this->from("usuarios/{$user->id}/editar")
             ->put("usuarios/{$user->id}", $this->withData([
-                'name' => 'Duilio Palacios',
-                'email' => 'duilio@styde.net',
+                'name' => 'Jonathan',
+                'email' => 'jonquintero@hotmail.com',
             ]))
             ->assertRedirect("usuarios/{$user->id}"); // (users.show)
 
         $this->assertDatabaseHas('users', [
-            'name' => 'Duilio Palacios',
-            'email' => 'duilio@styde.net',
+            'name' => 'Jonathan',
+            'email' => 'jonquintero@hotmail.com',
         ]);
     }
 
@@ -201,8 +201,8 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}");
 
         $this->assertCredentials([
-            'name' => 'Duilio',
-            'email' => 'duilio@styde.net',
+            'name' => 'Jonathan',
+            'email' => 'jonquintero@hotmail.com',
             'password' => $oldPassword // VERY IMPORTANT!
         ]);
     }
@@ -221,7 +221,7 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}/editar")
             ->assertSessionHasErrors(['role']);
 
-        $this->assertDatabaseMissing('users', ['email' => 'duilio@styde.net']);
+        $this->assertDatabaseMissing('users', ['email' => 'jonquintero@hotmail.com']);
     }
 
     /** @test */
@@ -238,6 +238,6 @@ class UpdateUsersTest extends TestCase
             ->assertRedirect("usuarios/{$user->id}/editar")
             ->assertSessionHasErrors(['state']);
 
-        $this->assertDatabaseMissing('users', ['email' => 'duilio@styde.net']);
+        $this->assertDatabaseMissing('users', ['email' => 'jonquintero@hotmail.com']);
     }
 }
