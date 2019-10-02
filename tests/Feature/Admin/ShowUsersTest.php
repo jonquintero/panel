@@ -14,12 +14,12 @@ class ShowUsersTest extends TestCase
     function it_displays_the_users_details()
     {
         $user = factory(User::class)->create([
-            'name' => 'Duilio Palacios'
+            'name' => 'Jonathan Quintero'
         ]);
 
         $this->get("/usuarios/{$user->id}") // usuarios/5
         ->assertStatus(200)
-            ->assertSee('Duilio Palacios');
+            ->assertSee('Jonathan Quintero');
     }
 
     /** @test */
